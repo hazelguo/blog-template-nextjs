@@ -1,4 +1,10 @@
-export default function Sidebar() {
+type SidebarProps = {
+  tags: string[];
+  selectedTag: string | null;
+  onTagClick: (tag: string | null) => void;
+};
+
+export default function Sidebar({ tags, selectedTag, onTagClick }: SidebarProps) {
   return (
     <div className="bg-white rounded-2xl">
       <h1 className="text-5xl font-extrabold leading-tight">AI</h1>
@@ -10,8 +16,31 @@ export default function Sidebar() {
       <div>
         <ul>
           <li>
-            <a href="#" className="text-black font-bold underline cursor-default text-base">Latest</a>
+            <button 
+              onClick={() => onTagClick(null)}
+              className={`text-base ${
+                selectedTag === null 
+                  ? 'text-black font-bold underline' 
+                  : 'text-gray-600 hover:text-black'
+              }`}
+            >
+              Latest
+            </button>
           </li>
+          {tags.map((tag) => (
+            <li key={tag} className="mt-2">
+              <button
+                onClick={() => onTagClick(tag)}
+                className={`text-base ${
+                  selectedTag === tag 
+                    ? 'text-black font-bold underline' 
+                    : 'text-gray-600 hover:text-black'
+                }`}
+              >
+                {tag}
+              </button>
+            </li>
+          ))}
         </ul>
       </div>
     </div>

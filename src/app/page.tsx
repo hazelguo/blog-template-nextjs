@@ -1,13 +1,23 @@
-import Sidebar from "../components/Sidebar";
-import BlogCard from "../components/BlogCard";
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
-import Link from "next/link";
+import HomeClient from "../components/HomeClient";
 
 const postsDirectory = path.join(process.cwd(), "src/content/posts");
 
-function getPosts() {
+type Post = {
+  title: string;
+  date: string;
+  author: string;
+  authorTitle: string;
+  readTime: number;
+  excerpt: string;
+  image: string;
+  tags?: string[];
+  slug: string;
+};
+
+function getPosts(): Post[] {
   const filenames = fs.readdirSync(postsDirectory);
   return filenames.map((filename) => {
     const filePath = path.join(postsDirectory, filename);
@@ -16,30 +26,23 @@ function getPosts() {
     return {
       ...data,
       slug: filename.replace(/\.md$/, ""),
-    };
+    } as Post;
   });
+}
+
+function getAllTags(posts: Post[]): string[] {
+  const tagSet = new Set<string>();
+  posts.forEach((post) => {
+    if (post.tags) {
+      post.tags.forEach((tag: string) => tagSet.add(tag));
+    }
+  });
+  return Array.from(tagSet);
 }
 
 export default function Home() {
   const posts = getPosts();
-  return (
-    <div className="bg-white min-h-screen px-16 py-22 flex justify-center">
-      <div className="w-full max-w-7xl flex gap-0">
-        <aside className="w-[150px] min-w-[130px] max-w-[150px] pb-8">
-          <Sidebar />
-        </aside>
-        <div className="border-l border-gray-200 h-auto mx-12" />
-        <main className="flex-1">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-10">
-            {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
-            {posts.map((post: any) => (
-              <Link key={post.slug} href={`/blog/${post.slug}`} className="block hover:opacity-80 transition">
-                <BlogCard post={post} />
-              </Link>
-            ))}
-          </div>
-        </main>
-      </div>
-    </div>
-  );
+  const allTags = getAllTags(posts);
+
+  return <HomeClient posts={posts} allTags={allTags} />;
 }

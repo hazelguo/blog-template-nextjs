@@ -1,13 +1,19 @@
 import Image from "next/image";
 
+type Post = {
+  title: string;
+  date: string;
+  author: string;
+  authorTitle: string;
+  readTime: number;
+  excerpt: string;
+  image: string;
+  tags?: string[];
+  slug: string;
+};
+
 type BlogCardProps = {
-  post: {
-    id: number;
-    title: string;
-    excerpt: string;
-    author: string;
-    image: string;
-  };
+  post: Post;
 };
 
 export default function BlogCard({ post }: BlogCardProps) {
