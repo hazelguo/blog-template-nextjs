@@ -43,3 +43,6 @@ next-env.d.ts
 
 # Temporary data processing
 /temp_data_processing
+
+# IDE files
+.idea/
